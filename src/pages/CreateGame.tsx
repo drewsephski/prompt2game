@@ -60,7 +60,7 @@ const CreateGame = () => {
         {/* Icon at the top */}
         <div className="w-full flex justify-center mb-6">
           <div className="w-24 h-24 rounded-full bg-arcade-terminal flex items-center justify-center relative">
-            <div className="absolute inset-0 rounded-full bg-arcade-purple opacity-20 blur-xl"></div>
+            <div className="absolute inset-0 rounded-full bg-emerald-400 opacity-20 blur-xl"></div>
             <div className="text-3xl">🎮</div>
           </div>
         </div>
@@ -76,7 +76,7 @@ const CreateGame = () => {
             value={gameIdea}
             onChange={(e) => setGameIdea(e.target.value)}
             placeholder="Describe your game idea..."
-            className="w-full bg-arcade-terminal border border-gray-700 rounded-lg p-4 min-h-24 text-white focus:outline-none focus:ring-2 focus:ring-arcade-purple resize-none"
+            className="w-full bg-arcade-terminal border border-gray-700 rounded-lg p-4 min-h-24 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
           />
           
           <div className="flex flex-wrap items-center justify-between mt-4">
@@ -98,7 +98,7 @@ const CreateGame = () => {
               <button 
                 onClick={handleCreate}
                 disabled={isCreating}
-                className="bg-arcade-purple hover:bg-opacity-90 text-white rounded-lg px-6 py-2 flex items-center font-medium disabled:opacity-70"
+                className="bg-emerald-400 hover:bg-emerald-300 text-arcade-dark rounded-lg px-6 py-2 flex items-center font-medium disabled:opacity-70"
               >
                 <Sparkles size={18} className="mr-2" />
                 Create
@@ -115,7 +115,7 @@ const CreateGame = () => {
               onClick={() => setSelectedCategory(category.id)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-full border ${
                 selectedCategory === category.id 
-                  ? 'bg-arcade-purple/20 border-arcade-purple text-white' 
+                  ? 'bg-emerald-400/20 border-emerald-400 text-white' 
                   : 'bg-arcade-terminal/40 border-gray-700 text-gray-300 hover:bg-arcade-terminal/60'
               }`}
             >

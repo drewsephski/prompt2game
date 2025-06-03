@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Terminal from '@/components/Terminal';
 import EmailForm from '@/components/EmailForm';
 import FeatureCard from '@/components/FeatureCard';
+import EngineArcadeHero from '@/components/ui/hero-section-nexus';
 import { MessageSquare, Code, Play } from 'lucide-react';
 
 const Index = () => {
@@ -20,6 +20,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col overflow-hidden bg-arcade-dark">
+      {/* New Hero Section */}
+      <EngineArcadeHero />
+      
       <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <Header />
         

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -104,7 +105,7 @@
 }
 
 .gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-arcade-purple to-arcade-pink;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-400;
 }
 
 .terminal {
@@ -144,7 +145,7 @@
   display: inline-block;
   width: 8px;
   height: 15px;
-  background-color: #7B68EE;
+  background-color: #22C55E;
   animation: cursor-blink 1s step-end infinite;
   margin-left: 2px;
   vertical-align: middle;
@@ -179,4 +180,18 @@
 /* Custom styles for game workspace */
 .clip-path-triangle {
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+@layer utilities {
+  @keyframes shine {
+    0% {
+      background-position: 100%;
+    }
+    100% {
+      background-position: -100%;
+    }
+  }
+  .animate-shine {
+    animation: shine 5s linear infinite;
+  }
 }
