@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, {
@@ -26,6 +25,7 @@ import {
     type TargetAndTransition,
     type Variants,
 } from 'framer-motion';
+import { GameOnboarding } from './game-onboarding';
 
 function cn(...classes: (string | undefined | null | boolean)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -525,15 +525,17 @@ const EngineArcadeHero: React.FC = () => {
                     aria-label="Game Idea"
                     className="flex-grow w-full sm:w-auto px-4 py-2 rounded-md bg-arcade-terminal border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
                 />
-                <motion.button
-                    type="submit"
-                    className="w-full sm:w-auto bg-emerald-400 text-arcade-dark px-5 py-2 rounded-md text-sm font-semibold hover:bg-emerald-300 transition-colors duration-200 whitespace-nowrap shadow-sm hover:shadow-md flex-shrink-0"
-                    whileHover={{ scale: 1.03, y: -1 }}
-                    whileTap={{ scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                >
-                    Create Game
-                </motion.button>
+                <GameOnboarding>
+                    <motion.button
+                        type="button"
+                        className="w-full sm:w-auto bg-emerald-400 text-arcade-dark px-5 py-2 rounded-md text-sm font-semibold hover:bg-emerald-300 transition-colors duration-200 whitespace-nowrap shadow-sm hover:shadow-md flex-shrink-0"
+                        whileHover={{ scale: 1.03, y: -1 }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    >
+                        Create Game
+                    </motion.button>
+                </GameOnboarding>
             </motion.form>
         </main>
     </div>
