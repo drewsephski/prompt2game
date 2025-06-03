@@ -11,16 +11,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+
 } from "@/components/ui/dialog";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 interface GameOnboardingProps {
-  children: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function GameOnboarding({ children }: GameOnboardingProps) {
+export function GameOnboarding({ isOpen, onClose }: GameOnboardingProps) {
   const [step, setStep] = useState(1);
 
   const stepContent = [
@@ -59,13 +60,12 @@ export function GameOnboarding({ children }: GameOnboardingProps) {
 
   return (
     <Dialog
+      open={isOpen}
       onOpenChange={(open) => {
         if (open) setStep(1);
+        else onClose();
       }}
     >
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
       <DialogContent className="gap-0 p-0 bg-arcade-terminal border-gray-700 [&>button:last-child]:text-white">
         <div className="p-2">
           <img
@@ -100,9 +100,9 @@ export function GameOnboarding({ children }: GameOnboardingProps) {
                 </Button>
               </DialogClose>
               {step < totalSteps ? (
-                <Button 
-                  className="group bg-emerald-400 hover:bg-emerald-300 text-arcade-dark" 
-                  type="button" 
+                <Button
+                  className="group bg-emerald-400 hover:bg-emerald-300 text-arcade-dark"
+                  type="button"
                   onClick={handleContinue}
                 >
                   Next
@@ -115,9 +115,15 @@ export function GameOnboarding({ children }: GameOnboardingProps) {
                 </Button>
               ) : (
                 <DialogClose asChild>
-                  <Button type="button" className="bg-emerald-400 hover:bg-emerald-300 text-arcade-dark">
-                    <Sparkles size={16} className="mr-2" />
-                    Start Creating
+                  <Button 
+                    asChild
+                    type="button" 
+                    className="bg-emerald-400 hover:bg-emerald-300 text-arcade-dark"
+                  >
+                    <a href="/waiting-list">
+                      <Sparkles size={16} className="mr-2" />
+                      Join Waitlist
+                    </a>
                   </Button>
                 </DialogClose>
               )}
