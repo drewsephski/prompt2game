@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,8 @@ import Features from "@/pages/Features";
 import HowItWorks from "@/pages/HowItWorks";
 import Pricing from "@/pages/Pricing";
 import Docs from "@/pages/Docs";
+import { AuthPage } from "@/components/auth/auth-page";
+import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
@@ -25,13 +26,11 @@ const AnimatedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    // Skip animation on first render
     if (isFirstRender) {
       setIsFirstRender(false);
     }
   }, [isFirstRender]);
 
-  // Skip animation on first render for better initial load
   if (isFirstRender) {
     return <>{children}</>;
   }
@@ -68,6 +67,19 @@ const withLayout = (Component: React.ComponentType) => {
   );
 };
 
+// Wrapper component to apply the protected layout and animations to specific routes
+const withProtectedLayout = (Component: React.ComponentType) => {
+  return (
+    <Layout>
+      <AnimatedRoute>
+        <ProtectedRoute>
+          <Component />
+        </ProtectedRoute>
+      </AnimatedRoute>
+    </Layout>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -81,8 +93,9 @@ const App = () => (
           <Route path="/how-it-works" element={withLayout(HowItWorks)} />
           <Route path="/pricing" element={withLayout(Pricing)} />
           <Route path="/docs" element={withLayout(Docs)} />
-          <Route path="/create-game" element={withLayout(CreateGame)} />
-          <Route path="/workspace" element={withLayout(GameWorkspace)} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/create-game" element={withProtectedLayout(CreateGame)} />
+          <Route path="/workspace" element={withProtectedLayout(GameWorkspace)} />
           <Route path="/waiting-list" element={withLayout(WaitingList)} />
           <Route path="*" element={withLayout(NotFound)} />
         </Routes>

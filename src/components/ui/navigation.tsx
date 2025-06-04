@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useUser, UserButton, SignInButton } from "@clerk/clerk-react";
 
 interface NavLinkProps {
   href: string;
@@ -138,6 +139,7 @@ export function Navigation() {
   const dropdownTimeoutRef = useRef<NodeJS.Timeout>();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { isSignedIn, user } = useUser();
 
   // Close mobile menu when resizing to desktop
   useEffect(() => {
@@ -235,15 +237,46 @@ export function Navigation() {
             <NavLink href="/docs" isActive={pathname === "/docs"}>
               Docs
             </NavLink>
-            <NavLink href="/create-game" isActive={pathname === "/create-game"}>
-              Create Game
-            </NavLink>
-            <button
-              onClick={() => navigate('/waiting-list')}
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 bg-gradient-to-r from-[#0CF2A0] to-[#00FF9D] hover:from-[#0AE296] hover:to-[#00E68A] transition-all duration-200 rounded-lg shadow-sm hover:shadow-lg hover:shadow-[#0CF2A0]/20 transform hover:scale-105"
-            >
-              Join Waitlist
-            </button>
+            {isSignedIn && (
+              <NavLink href="/create-game" isActive={pathname === "/create-game"}>
+                Create Game
+              </NavLink>
+            )}
+            
+            {/* Authentication Section */}
+            {isSignedIn ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-300">
+                  Welcome, {user?.firstName || user?.username}!
+                </span>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8",
+                      userButtonPopoverCard: "bg-gray-900 border border-gray-700",
+                      userButtonPopoverActions: "bg-gray-900",
+                      userButtonPopoverActionButton: "text-gray-300 hover:text-white hover:bg-gray-800",
+                      userButtonPopoverActionButtonText: "text-gray-300",
+                      userButtonPopoverFooter: "bg-gray-900 border-t border-gray-700",
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <SignInButton fallbackRedirectUrl="/" forceRedirectUrl="/">
+                  <button className="text-gray-300 hover:text-white transition-colors">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <button
+                  onClick={() => navigate('/waiting-list')}
+                  className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 bg-gradient-to-r from-[#0CF2A0] to-[#00FF9D] hover:from-[#0AE296] hover:to-[#00E68A] transition-all duration-200 rounded-lg shadow-sm hover:shadow-lg hover:shadow-[#0CF2A0]/20 transform hover:scale-105"
+                >
+                  Join Waitlist
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -319,21 +352,52 @@ export function Navigation() {
               >
                 Docs
               </NavLink>
-              <NavLink
-                href="/create-game"
-                className="block px-3 py-2 rounded-md text-base font-medium"
-                onClick={closeAllMenus}
-                isActive={pathname === "/create-game"}
-              >
-                Create Game
-              </NavLink>
-              <a
-                href="/waiting-list"
-                className="block w-full text-center mt-4 px-4 py-2 rounded-md text-base font-bold text-black bg-[#0CF2A0] hover:bg-[#0AE296] transition-colors duration-200"
-                onClick={closeAllMenus}
-              >
-                Join Waitlist
-              </a>
+              {isSignedIn && (
+                <NavLink
+                  href="/create-game"
+                  className="block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={closeAllMenus}
+                  isActive={pathname === "/create-game"}
+                >
+                  Create Game
+                </NavLink>
+              )}
+              
+              {/* Mobile Auth Section */}
+              {isSignedIn ? (
+                <div className="px-3 py-2 border-t border-gray-700 mt-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-300">
+                      {user?.firstName || user?.username}
+                    </span>
+                    <UserButton
+                      appearance={{
+                        elements: {
+                          avatarBox: "w-8 h-8",
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <SignInButton fallbackRedirectUrl="/" forceRedirectUrl="/">
+                    <button
+                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+                      onClick={closeAllMenus}
+                    >
+                      Sign In
+                    </button>
+                  </SignInButton>
+                  <a
+                    href="/waiting-list"
+                    className="block w-full text-center mt-4 px-4 py-2 rounded-md text-base font-bold text-black bg-[#0CF2A0] hover:bg-[#0AE296] transition-colors duration-200"
+                    onClick={closeAllMenus}
+                  >
+                    Join Waitlist
+                  </a>
+                </>
+              )}
             </div>
           </motion.div>
         )}
