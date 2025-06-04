@@ -24,6 +24,42 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Send email to drewsepeczi@gmail.com
+      const response = await fetch('https://formspree.io/f/xpwagqpv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          message: `New waitlist signup: ${email}`,
+          _replyto: email,
+          _subject: 'New Waitlist Signup - Game Creator AI'
+        }),
+      });
+
+      if (response.ok) {
+        setShowCelebration(true);
+        setEmail('');
+        toast.success('Successfully joined the waitlist!');
+      } else {
+        throw new Error('Failed to submit');
+      }
+    } catch (error) {
+      console.error('Error submitting to waitlist:', error);
+      toast.error('Failed to join the waitlist. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col overflow-hidden bg-arcade-dark">
       <HeroSection />
@@ -57,84 +93,88 @@ const Index = () => {
         
         <Terminal />
         
-        <GlowCard className="p-8 group hover:scale-[1.01] transition-transform duration-300">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-6 p-3 rounded-full bg-gradient-to-br from-[#0CF2A0]/20 to-[#00FF9D]/20">
-              <Mail className="h-8 w-8 text-[#0CF2A0]" />
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-3">Join Our Waitlist</h3>
-            <p className="text-gray-300 mb-6 max-w-md">
-              Be the first to know when we launch and get early access to exclusive features.
-            </p>
-            
-            <form 
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (!email || isSubmitting) return;
-                
-                setIsSubmitting(true);
-                
-                try {
-                  // Simulate API call
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-                  
-                  // Show success
-                  setShowCelebration(true);
-                  setEmail('');
-                  toast.success('Successfully joined the waitlist!');
-                } catch (error) {
-                  toast.error('Failed to join the waitlist. Please try again.');
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
-              className="w-full max-w-md"
-            >
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <div className="relative flex-1 group">
-                  <GlowEffect 
-                    className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    glowClassName="from-[#0CF2A0] to-[#00FF9D]"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <GlowCard className="p-8 group hover:scale-[1.01] transition-transform duration-300">
+            <div className="flex flex-col items-center text-center">
+              <motion.div 
+                className="mb-6 p-3 rounded-full bg-gradient-to-br from-[#0CF2A0]/20 to-[#00FF9D]/20"
+                whileHover={{ scale: 1.1, rotate: 360 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Mail className="h-8 w-8 text-[#0CF2A0]" />
+              </motion.div>
+              <h3 className="text-2xl font-bold text-white mb-3">Join Our Waitlist</h3>
+              <p className="text-gray-300 mb-6 max-w-md">
+                Be the first to know when we launch and get early access to exclusive features.
+              </p>
+              
+              <form onSubmit={handleWaitlistSubmit} className="w-full max-w-md">
+                <div className="flex flex-col sm:flex-row gap-3 w-full">
+                  <div className="relative flex-1 group">
+                    <GlowEffect 
+                      className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      glowClassName="from-[#0CF2A0] to-[#00FF9D]"
+                    >
+                      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-[#0CF2A0]/20 to-[#00FF9D]/20 blur-md"></div>
+                    </GlowEffect>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      className="relative w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0CF2A0] focus:border-transparent transition-all duration-200 z-10"
+                    />
+                  </div>
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-6 py-3 bg-gradient-to-r from-[#0CF2A0] to-[#00FF9D] hover:from-[#0AE296] hover:to-[#00E68A] text-gray-900 font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-[#0CF2A0]/20 to-[#00FF9D]/20 blur-md"></div>
-                  </GlowEffect>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="relative w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0CF2A0] focus:border-transparent transition-all duration-200 z-10"
-                  />
+                    <AnimatePresence mode="wait">
+                      {isSubmitting ? (
+                        <motion.div
+                          key="loading"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-2"
+                        >
+                          <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Joining...</span>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="default"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-2"
+                        >
+                          <span>Join Waitlist</span>
+                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-3 bg-gradient-to-r from-[#0CF2A0] to-[#00FF9D] hover:from-[#0AE296] hover:to-[#00E68A] text-gray-900 font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span>Joining...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Join Waitlist</span>
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-            
-            <p className="text-xs text-gray-500 mt-3">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
-          </div>
-        </GlowCard>
+              </form>
+              
+              <p className="text-xs text-gray-500 mt-3">
+                We respect your privacy. Unsubscribe at any time.
+              </p>
+            </div>
+          </GlowCard>
+        </motion.div>
         
         <Celebration 
           isOpen={showCelebration} 
